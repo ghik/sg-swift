@@ -11,6 +11,12 @@ app (stringfile out) bash(string command) {
   bash "-c" command stdout=@out;
 }
 
+(int out[]) countlengths(string ps[][]) {
+	foreach param,i in ps {
+	    out[i] = @length(param);
+	}
+}
+
 (string out[][]) gencross(string sets[][]) {
 	string setreg[];	
 	foreach set,i in sets {
@@ -43,15 +49,22 @@ app (stringfile out) bash(string command) {
 	out = tmparray[@length(indices)];
 }
 
-(projectindex out[]) project(string sets[][], int dim, int lengths[]) {
-	string indexsets[][];	
+(string out[][]) dimdec(string sets[][], int dim) {
 	foreach set,i in sets {
 		if(i<dim) {
-			indexsets[i] = indexlist(set);
+			out[i] = set;
 		}
 		if(i>dim) {
-			indexsets[i-1] = indexlist(set);
+			out[i-1] = set;
 		}
+	}
+}
+
+(projectindex out[]) project(string sets[][], int dim, int lengths[]) {
+	string decsets[][] = dimdec(sets,dim);	
+	string indexsets[][];	
+	foreach decset,i in decsets {
+		indexsets[i] = indexlist(decset);
 	}
 	string summaries[][] = gencross(indexsets);	
 	
@@ -62,12 +75,15 @@ app (stringfile out) bash(string command) {
 				newsets[j][0] = param;
 				out[i].params[j] = sets[j][@toint(param)];
 			}
-			if(j>dim) {
+			if(j>=dim) {
 				newsets[j+1][0] = param;
-				out[i].params[j] = sets[j+1][@toint(param)];
+				out[i].params[j+1] = sets[j+1][@toint(param)];
 			}
 		}
-		newsets[dim] = sets[dim];
+		foreach set,j in sets[dim] {
+			newsets[dim][j] = @strcat(j);
+		}
+		out[i].params[dim]  = "x";
 		string indset[][] = gencross(newsets);
 		foreach inds,k in indset {
 			out[i].indices[k] = findindex(inds,lengths);
@@ -80,10 +96,14 @@ app (datafile out) simulation(string args[]) {
 }
 
 app (plotfile out) plot(datafile data) {
-    echo stdin=@filename(data) stdout=@filename(out);   
+    echo @filename(data) stdout=@filename(out);   
 }
 
 app (datafile out) avgcount(datafile files[]) {
+	echo @filenames(files) stdout=@filename(out);
+}
+
+app (datafile out) aggcount(datafile files[]) {
 	echo @filenames(files) stdout=@filename(out);
 }
 
@@ -94,11 +114,7 @@ params[2] = ["0.1","0.2"];
 # samples
 params[3] = ["0","1","2","3"];
 
-int lens[];
-foreach param,i in params {
-    lens[i] = @length(param);
-}
-
+int lens[] = countlengths(params);
 string configs[][] = gencross(params);
 
 datafile outfiles[];
@@ -112,18 +128,50 @@ foreach config,i in configs {
         outfiles[i] = f;
 }
 
-
 projectindex avgs[] = project(params,3,lens);
-
-foreach avg in avgs {
+datafile summaryfiles[];
+foreach avg,i in avgs {
         datafile summary<
                 regexp_mapper;
                 source=@strjoin(avg.params,"_"),
                 match="(.*)",
                 transform="sim_\\1_summary.dat">;
 	datafile samplefiles[];
-	foreach index,i in avg.indices {
-		samplefiles[i] = outfiles[index];
+	foreach index,j in avg.indices {
+		samplefiles[j] = outfiles[index];
 	}
-	summary = avgcount(samplefiles);	
+	summary = avgcount(samplefiles);
+	summaryfiles[i] = summary;
+        plotfile plotf<
+                regexp_mapper;
+                source=@strjoin(avg.params,"_"),
+                match="(.*)",
+                transform="sim_\\1_summary.png">;
+	plotf = plot(summary);		
 }
+
+string summaryparams[][] = dimdec(params,3);
+int summarylens[] = countlengths(summaryparams);
+foreach param,pi in summaryparams {
+	projectindex aggs[] = project(summaryparams,pi,summarylens);
+	foreach agg,i in aggs {
+		datafile aggfile<
+		        regexp_mapper;
+		        source=@strjoin(agg.params,"_"),
+		        match="(.*)",
+		        transform="sim_\\1_agg.dat">;
+		datafile sampleaggfiles[];
+		foreach index,j in agg.indices {
+			sampleaggfiles[j] = summaryfiles[index];
+		}
+		aggfile = aggcount(sampleaggfiles);
+		plotfile plotf<
+		        regexp_mapper;
+		        source=@strjoin(agg.params,"_"),
+		        match="(.*)",
+		        transform="sim_\\1_agg.png">;
+		plotf = plot(aggfile);		
+	}
+}
+
+
