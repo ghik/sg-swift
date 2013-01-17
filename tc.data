@@ -22,6 +22,7 @@ localhost	sleep		/usr/bin/sleep	INSTALLED	INTEL32::LINUX	null
 localhost	bash		/bin/bash	INSTALLED	INTEL32::LINUX	null
 localhost	runner		/home/ghik/sem/Gridy/sg-swift/jagerunner/runner	INSTALLED	INTEL32::LINUX	null
 localhost	plotter		/home/ghik/sem/Gridy/sg-swift/jagerunner/plotter	INSTALLED	INTEL32::LINUX	null
+localhost	aggplotter		/home/ghik/sem/Gridy/sg-swift/jagerunner/aggplotter	INSTALLED	INTEL32::LINUX	null
 localhost	summarize		/home/ghik/sem/Gridy/sg-swift/jagerunner/summarize	INSTALLED	INTEL32::LINUX	null
 
 

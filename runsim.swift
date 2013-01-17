@@ -103,8 +103,8 @@ app (datafile out) avgcount(datafile files[]) {
 	summarize @filenames(files) stdout=@filename(out);
 }
 
-app (datafile out) aggcount(datafile files[]) {
-	echo @filenames(files) stdout=@filename(out);
+app (plotfile out) plotagg(datafile files[]) {
+	aggplotter @filename(out) @filenames(files);
 }
 
 string params[][];
@@ -141,6 +141,7 @@ foreach avg,i in avgs {
 		samplefiles[j] = outfiles[index];
 	}
 	summary = avgcount(samplefiles);
+    summaryfiles[i] = summary;
     plotfile pf <regexp_mapper;
                 source=@filename(summary),
                 match="(.*)dat",
@@ -163,13 +164,12 @@ foreach param,pi in summaryparams {
 		foreach index,j in agg.indices {
 			sampleaggfiles[j] = summaryfiles[index];
 		}
-		aggfile = aggcount(sampleaggfiles);
 		plotfile plotf<
 		        regexp_mapper;
 		        source=@strjoin(agg.params,"_"),
 		        match="(.*)",
 		        transform="sim_\\1_agg.png">;
-		plotf = plot(aggfile);		
+		plotf = plotagg(sampleaggfiles);		
 	}
 }
 
