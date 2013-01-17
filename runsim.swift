@@ -92,15 +92,15 @@ app (stringfile out) bash(string command) {
 }
 
 app (datafile out) simulation(string args[]) {
-	echo args stdout=@filename(out);
+	runner args stdout=@filename(out);
 }
 
 app (plotfile out) plot(datafile data) {
-    echo @filename(data) stdout=@filename(out);   
+    plotter @filename(data) @filename(out);   
 }
 
 app (datafile out) avgcount(datafile files[]) {
-	echo @filenames(files) stdout=@filename(out);
+	summarize @filenames(files) stdout=@filename(out);
 }
 
 app (datafile out) aggcount(datafile files[]) {
@@ -141,13 +141,12 @@ foreach avg,i in avgs {
 		samplefiles[j] = outfiles[index];
 	}
 	summary = avgcount(samplefiles);
-	summaryfiles[i] = summary;
-        plotfile plotf<
-                regexp_mapper;
-                source=@strjoin(avg.params,"_"),
-                match="(.*)",
-                transform="sim_\\1_summary.png">;
-	plotf = plot(summary);		
+    plotfile pf <regexp_mapper;
+                source=@filename(summary),
+                match="(.*)dat",
+                transform="\\1png">;
+
+    pf = plot(summary);
 }
 
 string summaryparams[][] = dimdec(params,3);

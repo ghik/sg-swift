@@ -2,7 +2,7 @@
 class Configuration:
     driver = 'jageplatform'
     
-    execpath = '../jage/algorithms/applications/emas-app'
+    execpath = '/home/ghik/sem/Gridy/sg-swift/jage/algorithms/applications/emas-app'
     agexml = "classpath:age.xml"
     dotreplacer = '_'
     

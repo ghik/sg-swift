@@ -1,0 +1,1 @@
+swift -sites.file sites.xml -tc.file tc.data $*

@@ -19,7 +19,9 @@ localhost 	cp 		/bin/cp         INSTALLED	INTEL32::LINUX	null
 localhost 	touch 		/bin/touch      INSTALLED	INTEL32::LINUX	null
 localhost	wc		/usr/bin/wc	INSTALLED	INTEL32::LINUX	null
 localhost	sleep		/usr/bin/sleep	INSTALLED	INTEL32::LINUX	null
-localhost	sleepecho		/home/ghik/sem/Gridy/sg-swift/sleepecho	INSTALLED	INTEL32::LINUX	null
-localhost	runsim		/data/Studia/S9/Gridy/sg-swift/jagerunner/runsim	INSTALLED	INTEL32::LINUX	null
 localhost	bash		/bin/bash	INSTALLED	INTEL32::LINUX	null
-localhost	python		/usr/bin/python	INSTALLED	INTEL32::LINUX	null
+localhost	runner		/home/ghik/sem/Gridy/sg-swift/jagerunner/runner	INSTALLED	INTEL32::LINUX	null
+localhost	plotter		/home/ghik/sem/Gridy/sg-swift/jagerunner/plotter	INSTALLED	INTEL32::LINUX	null
+localhost	summarize		/home/ghik/sem/Gridy/sg-swift/jagerunner/summarize	INSTALLED	INTEL32::LINUX	null
+
+
