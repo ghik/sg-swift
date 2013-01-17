@@ -76,15 +76,15 @@ app (stringfile out) bash(string command) {
 }
 
 app (datafile out) simulation(string args[]) {
-	echo args stdout=@filename(out);
+	runner args stdout=@filename(out);
 }
 
 app (plotfile out) plot(datafile data) {
-    echo stdin=@filename(data) stdout=@filename(out);   
+    plotter @filename(data) @filename(out);   
 }
 
 app (datafile out) avgcount(datafile files[]) {
-	echo @filenames(files) stdout=@filename(out);
+	summarize @filenames(files) stdout=@filename(out);
 }
 
 string params[][];
@@ -112,7 +112,6 @@ foreach config,i in configs {
         outfiles[i] = f;
 }
 
-
 projectindex avgs[] = project(params,3,lens);
 
 foreach avg in avgs {
@@ -125,5 +124,12 @@ foreach avg in avgs {
 	foreach index,i in avg.indices {
 		samplefiles[i] = outfiles[index];
 	}
-	summary = avgcount(samplefiles);	
+	summary = avgcount(samplefiles);
+
+    plotfile pf <regexp_mapper;
+                source=@filename(summary),
+                match="(.*)dat",
+                transform="\\1png">;
+
+    pf = plot(summary);
 }

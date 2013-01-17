@@ -19,7 +19,6 @@ class Driver:
             print 'Could not find pom.xml in {}'.format(execpath)
             sys.exit(1)
             
-        subprocess.check_call(['mvn', 'package', 'dependency:copy-dependencies'], stdout=devnull)
         os.chdir(cwd)
         
     def prepare_parameters(self, changingParams):
