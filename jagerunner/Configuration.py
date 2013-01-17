@@ -2,7 +2,7 @@
 class Configuration:
     driver = 'jageplatform'
     
-    execpath = '/home/ghik/sem/IntObl/intobl/jage/algorithms/applications/emas-app'
+    execpath = '../jage/algorithms/applications/emas-app'
     agexml = "classpath:age.xml"
     dotreplacer = '_'
     

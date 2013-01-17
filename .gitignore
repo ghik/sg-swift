@@ -2,3 +2,14 @@ logs/
 sites.xml
 swift.log
 *.pyc
+.svn
+
+.settings
+.classpath
+.project
+
+.idea
+*.iml
+
+*.class
+target
