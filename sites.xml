@@ -1,0 +1,9 @@
+<config>
+  <pool handle="localhost">
+    <filesystem provider="local" />
+    <execution provider="local" />
+    <workdirectory>/home/ghik/sem/Gridy/sg-swift/wd</workdirectory>
+    <profile namespace="karajan" key="jobThrottle">0</profile>
+  </pool>
+</config>
+
